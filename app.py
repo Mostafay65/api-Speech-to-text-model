@@ -1,6 +1,13 @@
+import warnings
+warnings.filterwarnings("ignore", message="FP16 is not supported on CPU; using FP32 instead")
+
+
+
+
 from flask import Flask, request, jsonify
 import whisper
 import os
+
 
 # Load the Whisper model
 model = whisper.load_model("turbo")
@@ -22,6 +29,8 @@ def transcribe_audio():
         if file.filename == '':
             return jsonify({"error": "No selected file"}), 400
 
+        print("\033[92m=============> Your request is received and is being processed......\033[0m")
+
         # Save the uploaded file temporarily
         file_path = os.path.join("temp_audio.mp3")
         file.save(file_path)
@@ -32,6 +41,8 @@ def transcribe_audio():
 
         # Remove the temporary file
         os.remove(file_path)
+
+        print("\033[92m=============> Your request is complete\033[0m")
 
         # Return the transcription
         return jsonify({"transcription": transcription})
